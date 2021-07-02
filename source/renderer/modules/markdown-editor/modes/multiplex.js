@@ -96,7 +96,8 @@ const highlightingModes = {
   },
   'text/x-rsrc': {
     'mode': 'r',
-    'selectors': ['r']
+// Added '{r' to enable syntax highlighting of chunks in .rmd files
+    'selectors': ['r', '{r']
   },
   'text/x-ruby': {
     'mode': 'ruby',
