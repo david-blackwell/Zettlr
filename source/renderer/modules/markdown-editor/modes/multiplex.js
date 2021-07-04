@@ -96,8 +96,7 @@ const highlightingModes = {
   },
   'text/x-rsrc': {
     'mode': 'r',
-// Added '{r' to enable syntax highlighting of chunks in .rmd files
-    'selectors': ['r', '{r']
+    'selectors': ['r']
   },
   'text/x-ruby': {
     'mode': 'ruby',
@@ -371,7 +370,8 @@ const highlightingModes = {
     let codeModes = []
 
     for (let [ mimeType, highlightingMode ] of Object.entries(highlightingModes)) {
-      let openRegex = new RegExp('\\s*(?:`{3}|~{3})\\s*(' + highlightingMode.selectors.join('|') + ')\\b.*$')
+	// Inclusion of `{3}\{ to enable syntax highlighting for code blocks beginning ```{info-string}
+	let openRegex = new RegExp('\\s*(?:`{3}|`{3}\{|~{3})\\s*(' + highlightingMode.selectors.join('|') + ')\\b.*$')
       codeModes.push({
         open: openRegex,
         close: /`{3}|~{3}/,
