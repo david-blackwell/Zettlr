@@ -336,8 +336,34 @@ function hintFunction (cm, opt) {
       // newly rendered codeblock.
       const line = cm.getLine(autocompleteStart.line)
       const match = codeBlockRE.exec(line)
+	  
+	  // If code block is of type ```{info-string} set codeBrace to True
+	  let codeBrace = false
+	  if(line.includes("\{", 3)){
+		codeBrace = true
+	  }
+
       if (match !== null) {
-        cm.replaceSelection('\n\n' + match[1])
+        // Dealing with the auto-complete of code blocks with braces
+		if(codeBrace){
+		  // Add closing brace at end of start line
+		  cm.replaceSelection('\}\n\n' + match[1])
+          // Remove closing brace at end of code block
+		  cm.setSelection({ line: autocompleteStart.line + 2, ch: 3}, {line: autocompleteStart.line + 2, ch: 4})
+		  cm.replaceSelection('')
+          // Selection of the code type through the hint box doubles the first letter
+		  // So this code checks if the hint box was used to select a code type
+		  // And if so, remove the double letter
+		  let highlightingMode = completion.displayText
+		  if(highlightingMode != "No highlighting"){
+			cm.setSelection({ line: autocompleteStart.line, ch: 4}, {line: autocompleteStart.line, ch: 5})
+			cm.replaceSelection('')
+		  }	
+		  
+	    }
+		else{
+		  cm.replaceSelection('\n\n' + match[1])
+	    }
         cm.setCursor({ line: autocompleteStart.line + 1, ch: 0 })
       }
     } else if (currentDatabase === availableDatabases['citekeys']) {
